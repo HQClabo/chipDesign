@@ -41,4 +41,3 @@ class Waveguide:
         
         return Utility.rotation(self.cell, self.coord_x, self.coord_y, self.rotation)
     
-#t
