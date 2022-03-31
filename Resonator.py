@@ -8,6 +8,7 @@ Created on Sun Mar 20 11:58:02 2022
 import gdspy
 import numpy as np
 import Utility
+#chipDesign.Utility as 
 
 class Resonator:
     
