@@ -39,8 +39,8 @@ class lumped_element_resonator:
         self.cell = self.lib.new_cell("Lumped element resonator")
         
         #Set initial parameters
-        self.length_inductor = 10
-        self.spacing_inductor = 5
+        self.length_inductor = 1000
+        self.spacing_inductor = 3
         self.width_inductor = 0.5
         self.width_resonator = 60
         self.width_capa_arm = 3
@@ -188,73 +188,10 @@ class unidimensional_metamaterial:
         box_unit_cell = unit_cell.get_bounding_box()
         array = gdspy.CellArray(unit_cell, self.N_unit_cell, 1, (box_unit_cell[1][0] - box_unit_cell[0][0] + self.ground_spacing,0))
         self.cell.add(array)
-        return self.cell
+        
+        return self.cell.flatten()
     
     
-    # def add_port(self,ghost):
-        
-        
-
-# test = lumped_element_resonator(0, 0)
-# test.draw_resonator()
-# print(test.get_bounding_box())
-
-
-
-# # gdspy.LayoutViewer()
-
-# #quick tests cell reference
-# bubu = gdspy.CellReference(test.draw_resonator()).translate(60, 60)
-
-# lib = gdspy.GdsLibrary()
-# newCell = lib.new_cell("test")
-
-# newCell.add(bubu)
-
-# sv = 50
-# sw = 10
-# ground = 3
-# headSpa = 5
-
-
-# bb = test.get_bounding_box()
-# rectv = gdspy.Rectangle([bb[0][0] - sw/2 + ground/2,bb[0][1] - headSpa], [bb[1][0] + sv/2 - ground/2, bb[1][1]])
-# rectw = gdspy.Rectangle([bb[0][0] - sv/2 + ground/2,bb[0][1] - headSpa], [bb[1][0] + sw/2 - ground/2, bb[1][1]])
-
-# rectangleCell = lib.new_cell("rectab")
-# rectangleCell.add(rectv)
-# rectCell2 = lib.new_cell("recta2")
-# rectCell2.add(rectw)
-
-# cellout = gdspy.CellReference(test.draw_resonator())
-
-
-# res1 = gdspy.Cell("res1")
-# testbool = gdspy.boolean(gdspy.CellReference(rectangleCell),cellout, "not")
-# res1.add(testbool)
-# bb = res1.get_bounding_box()
-
-# testbool2 = gdspy.CellReference(res1).translate(bb[1][0]-bb[0][0] + ground,0)
-# res2 = gdspy.Cell("res2")
-# res2.add(testbool2)
-# # newCell.add(test.draw_resonator())
-# # newCell.flatten()
-
-# cellArrayTest = lib.new_cell("array test")
-# # ArrayTest = gdspy.CellArray(newCell, 10, 10,(100,100))
-# # cellArrayTest.add(ArrayTest)
-# cellArrayTest.add(res1)
-# cellArrayTest.add(res2)
-# cellArrayTest.flatten()
-
-# # testbool2 = gdspy.CellArray(testbool,1, 5, 5)
-
-
-
-
-
-# gdspy.LayoutViewer()
-
 
 
 
