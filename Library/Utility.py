@@ -65,5 +65,26 @@ def switchSign(celltoSwitch):
     return outCell
     
     
-    
+def change_layer_of_entire_cell(cell, layer, datatype=None):
+    # changes layer and datatype of all polygonsets of a cell
+
+    # Get dependency cells recursively
+    all_cells = cell.get_dependencies(True)
+    # Include original cell in the set
+    all_cells.add(cell)
+    for c in all_cells:
+        # Process all polygons
+        for polygon in c.polygons:
+            # Substitute layer list for a new one with the
+            # the same length and the desired layer number
+            polygon.layers = [layer] * len(polygon.layers)
+            # Proecessing datatype
+            if datatype != None:
+                polygon.datatypes = [datatype] * len(polygon.layers)
+        # Process all paths
+        for path in c.paths:
+            path.layers = [layer] * len(path.layers)
+        # Process all labels
+        for label in c.labels:
+            label.layer = layer
 
