@@ -132,13 +132,9 @@ class lumped_element_resonator:
 
 class unidimensional_metamaterial:
     #For the moment only possible to implement dimers
-    def __init__(self,coord_x, coord_y, rotation, resonator_cell):
+    def __init__(self, n_unit_cell, N_unit_cell, resonator_cell):
         self.lib = gdspy.GdsLibrary()
         gdspy.current_library = self.lib
-        
-        self.coord_x = coord_x
-        self.coord_y = coord_y
-        self.rotation = rotation
         
         self.resonator_cell = resonator_cell
         self.cell = self.lib.new_cell("Metamaterial")
@@ -151,7 +147,8 @@ class unidimensional_metamaterial:
         self.res2neg = self.lib.new_cell("Negative resonator 2")
         
         
-        # self.N_unit_cell = N_unit_cell
+        self.N_unit_cell = N_unit_cell
+        self.n_unit_cell = n_unit_cell
         self.head_spacing_to_GND = 3
         self.ground_spacing = 3
         
@@ -186,12 +183,12 @@ class unidimensional_metamaterial:
         return self.unit_cell
     
     
-    def draw_metamaterial(self,N_unit_cell):
+    def draw_metamaterial(self):
         unit_cell = self.set_unit_cell()
         box_unit_cell = unit_cell.get_bounding_box()
-        array = gdspy.CellArray(unit_cell, N_unit_cell, 1, (box_unit_cell[1][0] - box_unit_cell[0][0] + self.ground_spacing,0))
+        array = gdspy.CellArray(unit_cell, self.N_unit_cell, 1, (box_unit_cell[1][0] - box_unit_cell[0][0] + self.ground_spacing,0))
         self.cell.add(array)
-        return Utility.rotation(self.cell, self.coord_x, self.coord_y, self.rotation)
+        return self.cell
     
     
     # def add_port(self,ghost):
