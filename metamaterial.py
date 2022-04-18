@@ -155,7 +155,12 @@ class unidimensional_metamaterial:
         self.intercell_spacing = 10
         self.intracell_spacing = 30
         
-        
+    
+    def set_parameters(self,head_spacing_to_GND, ground_spacing, intercell_spacing, intracell_spacing):
+        self.head_spacing_to_GND = head_spacing_to_GND
+        self.ground_spacing = ground_spacing
+        self.intercell_spacing = intercell_spacing
+        self.intracell_spacing = intracell_spacing
     
     
     def set_unit_cell(self):
