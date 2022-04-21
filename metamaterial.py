@@ -42,7 +42,7 @@ class lumped_element_resonator:
         #Set initial parameters
         self.length_inductor = 182
         self.spacing_inductor = 5
-        self.width_inductor = 0.43
+        self.width_inductor = 0.5
         self.width_resonator = 32.572
         self.width_capa_arm = 1.715
         self.length_capa_arm = 41.5
