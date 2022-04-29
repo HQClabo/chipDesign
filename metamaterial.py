@@ -36,20 +36,23 @@ class lumped_element_resonator:
         self.lib = gdspy.GdsLibrary()
         gdspy.current_library = self.lib
         
+        self.layer = 3
+        
         self.cell = self.lib.new_cell("Lumped element resonator")
         self.ghost = self.lib.new_cell("Ghost")
         
         #Set initial parameters
-        self.length_inductor = 182
+        self.length_inductor = 180
         self.spacing_inductor = 5
-        self.width_inductor = 0.5
+        self.width_inductor = 0.4
         self.width_resonator = 32.572
         self.width_capa_arm = 1.715
-        self.length_capa_arm = 41.5
+        self.length_capa_arm = 40
         self.height_capa_head = 10
         self.centre = coord_x, coord_y
         
     
+    # def set_parameters(self, length_inductor, spacing_inductor, width_inductor, width_resonator, width_capa_arm, length_capa_arm,)
         
     
     def draw_resonator(self, port = False):
@@ -79,8 +82,8 @@ class lumped_element_resonator:
         
         arm1_points = [self.centre[0] - self.width_resonator/2, self.centre[1]], [self.centre[0] - self.width_resonator/2 + self.width_capa_arm, self.centre[1] + self.length_capa_arm]
         arm2_points = [self.centre[0] + self.width_resonator/2 - self.width_capa_arm, self.centre[1]], [self.centre[0] + self.width_resonator/2, self.centre[1] + self.length_capa_arm]
-        arm1 = gdspy.Rectangle(arm1_points[0], arm1_points[1])
-        arm2 = gdspy.Rectangle(arm2_points[0], arm2_points[1])
+        arm1 = gdspy.Rectangle(arm1_points[0], arm1_points[1], layer = self.layer)
+        arm2 = gdspy.Rectangle(arm2_points[0], arm2_points[1], layer = self.layer)
         
         # self.cell.add(head_capa)
         # self.cell.add(arm1)
@@ -119,14 +122,14 @@ class lumped_element_resonator:
             # else:
                 # print('not entered')
         if port == False:
-            path = gdspy.FlexPath(M, self.width_inductor)
+            path = gdspy.FlexPath(M, self.width_inductor, layer = self.layer)
             self.cell.add(path)
             self.cell.add(head_capa)
             self.cell.add(arm1)
             self.cell.add(arm2)
             return self.cell
         else:
-            path = gdspy.FlexPath(M[:-1], self.width_inductor)
+            path = gdspy.FlexPath(M[:-1], self.width_inductor, layer = self.layer)
             self.ghost.add(path)
             self.ghost.add(head_capa)
             self.ghost.add(arm1)
@@ -145,6 +148,8 @@ class unidimensional_metamaterial:
     def __init__(self,coord_x, coord_y, rotation, resonator_cell, ghost):
         self.lib = gdspy.GdsLibrary()
         gdspy.current_library = self.lib
+        
+        self.layer = 3
         
         self.coord_x = coord_x
         self.coord_y = coord_y
@@ -182,16 +187,16 @@ class unidimensional_metamaterial:
         self.width_WG = 21
         
     
-    def set_WG_parameters(self, width_WG, length_WG, width_WG_end):
-        self.width_WG = width_WG
-        self.length_WG = length_WG
-        self.width_WG_end = width_WG_end
+    # def set_WG_parameters(self, width_WG, length_WG, width_WG_end):
+    #     self.width_WG = width_WG
+    #     self.length_WG = length_WG
+    #     self.width_WG_end = width_WG_end
     
-    def set_metamat_parameters(self, head_spacing_to_GND, ground_spacing, intercell_spacing, intracell_spacing):
-        self.head_spacing_to_GND = head_spacing_to_GND
-        self.ground_spacing = ground_spacing
-        self.intercell_spacing = intercell_spacing
-        self.intracell_spacing = intracell_spacing
+    # def set_metamat_parameters(self, head_spacing_to_GND, ground_spacing, intercell_spacing, intracell_spacing):
+    #     self.head_spacing_to_GND = head_spacing_to_GND
+    #     self.ground_spacing = ground_spacing
+    #     self.intercell_spacing = intercell_spacing
+    #     self.intracell_spacing = intracell_spacing
     
     
     def __set_unit_cell(self):
@@ -199,10 +204,10 @@ class unidimensional_metamaterial:
         resonator_box = self.resonator_cell.get_bounding_box()
         #Create box for first resonator
         
-        rect1 = gdspy.Rectangle([resonator_box[0][0] - self.intracell_spacing/2 + self.ground_spacing/2,resonator_box[0][1] - self.head_spacing_to_GND], [resonator_box[1][0] + self.intercell_spacing/2 - self.ground_spacing/2, resonator_box[1][1]])
+        rect1 = gdspy.Rectangle([resonator_box[0][0] - self.intracell_spacing/2 + self.ground_spacing/2,resonator_box[0][1] - self.head_spacing_to_GND], [resonator_box[1][0] + self.intercell_spacing/2 - self.ground_spacing/2, resonator_box[1][1]],layer = self.layer)
         self.rect1Cell.add(rect1)
         #Create box for first resonator
-        rect2 = gdspy.Rectangle([resonator_box[0][0] - self.intercell_spacing/2 + self.ground_spacing/2,resonator_box[0][1] - self.head_spacing_to_GND], [resonator_box[1][0] + self.intracell_spacing/2 - self.ground_spacing/2, resonator_box[1][1]])
+        rect2 = gdspy.Rectangle([resonator_box[0][0] - self.intercell_spacing/2 + self.ground_spacing/2,resonator_box[0][1] - self.head_spacing_to_GND], [resonator_box[1][0] + self.intracell_spacing/2 - self.ground_spacing/2, resonator_box[1][1]], layer = self.layer)
         self.rect2Cell.add(rect2)
         
         box_rectangle = self.rect2Cell.get_bounding_box()
@@ -230,9 +235,6 @@ class unidimensional_metamaterial:
         
     
     def add_port(self):
-        
-        
-        
         #add waveguide connection
         ghost_bb = self.ghost.get_bounding_box()
         metamat_bb = self.cell.get_bounding_box()
@@ -265,11 +267,11 @@ class unidimensional_metamaterial:
         print(res1_bb)
         
         #VERY DODGY BELOW
-        rect_left = gdspy.Rectangle([res1_bb[0][0] - self.length_WG + 6.5,res1_bb[0][1]], [res1_bb[1][0],res1_bb[1][1]])
+        rect_left = gdspy.Rectangle([res1_bb[0][0] - self.length_WG + self.intracell_spacing + self.ground_spacing/2 ,res1_bb[0][1]], [res1_bb[1][0],res1_bb[1][1]])
         self.testCell.add(rect_left)
         neg_ghost_left = gdspy.boolean(gdspy.CellReference(self.testCell), gdspy.CellReference(self.rectGhostCellLeft), "not").translate(-(res1_bb[1][0]-metamat_bb[0][0] + self.ground_spacing),0)
         res2_bb = self.rect1Cell.get_bounding_box()
-        rect_right = gdspy.Rectangle([res2_bb[0][0] ,res2_bb[0][1]], [res2_bb[1][0] + self.length_WG - 6.5,res2_bb[1][1]])
+        rect_right = gdspy.Rectangle([res2_bb[0][0] ,res2_bb[0][1]], [res2_bb[1][0] + self.length_WG - self.intracell_spacing - self.ground_spacing/2,res2_bb[1][1]])
         
         self.testCell2.add(rect_right)
         neg_ghost_right = gdspy.boolean(gdspy.CellReference(self.testCell2), gdspy.CellReference(self.rectGhostCellRight), "not").translate(-(res2_bb[0][0]-metamat_bb[1][0] - self.ground_spacing),0)
@@ -289,7 +291,8 @@ class unidimensional_metamaterial:
         
         
     def output_metamaterial(self):
-        
+        print(self.layer)
+        Utility.change_layer_of_entire_cell(self.cell, 3)
         return Utility.rotation(self.cell, self.coord_x, self.coord_y, self.rotation)
         # metamaterial_bounding_box = self.cell.get_bounding_box()
         
@@ -317,9 +320,9 @@ class unidimensional_metamaterial:
 
 # # newCell.add(bubu)
 
-# sv = 50
+# sv = 20
 # sw = 10
-# ground = 3
+# ground = 2.5
 # headSpa = 5
 
 
@@ -357,12 +360,18 @@ class unidimensional_metamaterial:
 
 
 # uniMM = unidimensional_metamaterial(0, 0, 0, test.draw_resonator(), test.draw_resonator(port = True))
+# # uniMM.layer = 5
 # # uniMM.set_unit_cell()
-# uniMM.set_metamat_parameters(3, 20, 30, 30)
-# bubu = uniMM.draw_metamaterial(4)
+# # uniMM.set_metamat_parameters(3, 20, 30, 30)
+# uniMM.intercell_spacing = sv
+# uniMM.intracell_spacing = sw
+# uniMM.ground_spacing = ground
+# uniMM.draw_metamaterial(4)
 
 # uniMM.add_port()
-# lib.add(uniMM.output_metamaterial())
+# test = uniMM.output_metamaterial()
+# # Utility.change_layer_of_entire_cell(test, 3, datatype=None)
+# lib.add(test)
 # # lib.add(uniMM.draw_metamaterial(3))
 
 # lib.write_gds("test.gds")
