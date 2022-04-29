@@ -10,7 +10,12 @@ import numpy as np
 import Utility as uti
 
 class squid_array:
-    def __init__(self,n):
+    def __init__(self,n, coord_x, coord_y, rotation):
+        
+        self.coord_x = coord_x
+        self.coord_y = coord_y
+        self.rotation = rotation
+        
         lib = gdspy.GdsLibrary()
         gdspy.current_library = lib
         
@@ -28,8 +33,15 @@ class squid_array:
         return print("SQUID array initialized")
     
     
-    # def set_parameters(self):
-    #     return print("test")
+    def set_parameters(self, body_width,body_height, arms_width, arms_length, junction_height, junction_width, balcony_height):
+        self.body_width = body_width
+        self.body_height = body_height
+        self.arms_width = arms_width
+        self.arms_length = arms_length
+        self.junction_height = junction_height
+        self.junction_width = junction_width
+        self.balcony_height = balcony_height
+        # return print("test")
     
     def __draw_body(self, layer = 2, datatype = 0):
         points = [[0,0],[0,self.body_height],[self.arms_width,self.body_height],[self.arms_width,self.body_height-self.arms_length],[self.body_width-self.arms_width,self.body_height-self.arms_length],[self.body_width-self.arms_width,self.body_height],
@@ -83,25 +95,37 @@ class squid_array:
         self.cell_array.add(self.__draw_connectors((array_points_init[0]+array_points_final[0])/2,array_points_init[1])[1])
         self.cell_array.add(self.__draw_connectors((array_points_init[0]+array_points_final[0])/2,array_points_final[1])[0].rotate(np.pi, center = ((array_points_init[0]+array_points_final[0])/2,array_points_final[1])))
         self.cell_array.add(self.__draw_connectors((array_points_init[0]+array_points_final[0])/2,array_points_final[1])[1].rotate(np.pi, center = ((array_points_init[0]+array_points_final[0])/2,array_points_final[1])))
-        return self.cell_array
+        # return self.cell_array
+        
+        return uti.rotation(self.cell_array, self.coord_x, self.coord_y, self.rotation)
     # def extend_squid_array(self,height):
     #     box = self.cell_array.get_bounding_box()
     #     bottom_extension = gdspy.Rectangle([box[0][0],box[0][1]-height], [box[1][0],box[0][1]])
     #     self.cell_array.add(bottom_extension)
     
     
-    def output_design(self, coord_x, coord_y):
-        self.draw_squid_array()
-        return gdspy.CellReference(self.cell_array, origin = (coord_x, coord_y))
+    # def output_design(self):
+    #     self.draw_squid_array()
+    #     return uti.rotation(self.cell, self.coord_x, self.coord_y, self.rotation)
     
     
         
 
-# t = squid_array(32)
+# t = squid_array(32,0,0,0)
 # # t.draw_body()
 # # t.draw_bridge_balcony()
 # # test = t.draw_squid_array()
 # # test2 = uti.rotation(test, 0, 0, 90)
-# v = t.output_design(0,500)
+
+# body_width = 4
+# body_height = 5.2
+# arms_width = 0.54
+# arms_length = 1.35
+# junction_height = 0.3
+# junction_width = 0.64
+# balcony_height = 0.5
+# t.set_parameters(body_width, body_height, arms_width, arms_length, junction_height, junction_width, balcony_height)
+# t.draw_squid_array()
+# # v = t.output_design(0,500)
 # # t.extend_squid_array(8)
 # gdspy.LayoutViewer()
