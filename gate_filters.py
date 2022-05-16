@@ -10,12 +10,7 @@ import gdspy
 
 
 class Pad:
-    
-    def __init__(self, cell, coord_x=0, coord_y=0, rotation=0):
-        self.cell = cell
-        self.coord_x = coord_x
-        self.coord_y = coord_y
-        self.rotation = rotation
+    def __init__(self, cell):
         self.cell = cell
     
     def set_parameters(self, pad_size):
@@ -26,12 +21,7 @@ class Pad:
 
 
 class InductorSpiral:
-    
-    def __init__(self, cell, coord_x=0, coord_y=0, rotation=0, ):
-        self.cell = cell
-        self.coord_x = coord_x
-        self.coord_y = coord_y
-        self.rotation = rotation
+    def __init__(self, cell):
         self.cell = cell
         self.inductance = 0
         self.length = 0
@@ -84,12 +74,7 @@ class InductorSpiral:
 
 
 class InductorMeander:
-    
-    def __init__(self, cell, coord_x=0, coord_y=0, rotation=0, ):
-        self.cell = cell
-        self.coord_x = coord_x
-        self.coord_y = coord_y
-        self.rotation = rotation
+    def __init__(self, cell):
         self.cell = cell
         self.inductance = 0
         self.length = 0
@@ -137,26 +122,24 @@ class InductorMeander:
 
 
 class Capacitor:
-
-    def __init__(self, cell, coord_x=0, coord_y=0, rotation=0):
-        self.cell = cell
-        self.coord_x = coord_x
-        self.coord_y = coord_y
-        self.rotation = rotation
+    def __init__(self, cell):
         self.cell = cell
 
-    def set_parameters(self,n_bars,length_bar=10,width_bar=1,width_line=1,separation=1,tail=10):
+    def set_parameters(self,n_bars,length_bar=10,width_bar=1,width_line=1,separation=1,tail=10,total_length=None):
         self.n_bars = n_bars
         self.length_bar = length_bar
         self.width_bar = width_bar
         self.width_line = width_line
         self.sep = separation
         self.tail = tail
+        self.tot_len = total_length
         
     def draw_capacitor(self):
         cell_bars = gdspy.Cell('bar')
-        
+
         length = self.n_bars*(self.width_bar + self.sep) - self.sep + 2*self.tail
+        if self.tot_len:
+            length = max(length,self.tot_len)
         line = gdspy.Path(self.width_line,(0,0))
         line.segment(length,'+y')
         

@@ -88,3 +88,28 @@ def change_layer_of_entire_cell(cell, layer, datatype=None):
         for label in c.labels:
             label.layer = layer
 
+def get_polygons_in_layer(cell_in, cell_out, layer):
+    # Get dependency cells recursively
+    cell = cell_in.copy('temp_copy')
+    # cell.flatten()
+    # all_cells = cell.get_dependencies(True)
+    # # Include original cell in the set
+    # all_cells.add(cell)
+    # for c in all_cells:
+    cell.flatten()
+    # Process all polygons
+    for polygon in cell.polygons:
+        if layer in polygon.layers:
+            cell_out.add(polygon)
+        # Substitute layer list for a new one with the
+        # the same length and the desired layer number
+        # polygon.layers = [layer] * len(polygon.layers)
+    # Process all paths
+    for path in cell.paths:
+        if layer in path.layers:
+            cell_out.add(path)
+    # Process all labels
+    for label in cell.labels:
+        if layer == label.layer:
+            cell_out.add(label)
+    return cell_out
