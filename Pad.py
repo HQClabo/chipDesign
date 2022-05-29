@@ -14,7 +14,7 @@ Created on Mon Mar 21 15:06:27 2022
 
 import gdspy
 import numpy as np
-import Utility
+import chipDesign.Utility as Utility
 
 #kjfdkfjlkdfjdkf
 class Pad:

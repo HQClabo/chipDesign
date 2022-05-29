@@ -112,4 +112,5 @@ def get_polygons_in_layer(cell_in, cell_out, layer):
     for label in cell.labels:
         if layer == label.layer:
             cell_out.add(label)
+    gdspy.current_library.remove(cell)
     return cell_out
